@@ -1,0 +1,74 @@
+﻿<html>
+<head>
+  <link href="{{ url_for('static', filename='botui/build/botui.min.css') }}"  rel="stylesheet">
+  <link href="{{ url_for('static', filename='botui/build/botui-theme-default.css') }}"  rel="stylesheet">  
+  <script src="https://cdn.jsdelivr.net/vue/latest/vue.min.js"></script>
+  <script src="https://unpkg.com/botui/build/botui.min.js"></script>
+  <script src="{{ url_for('static', filename='axios.min.js') }}?A2"></script>
+
+</head>
+<body>
+<h1>Bot UI test:</h1>
+
+<div class="botui-app-container" id="botui-app" style="height :400px;">
+  <bot-ui></bot-ui>
+</div>
+<!-- form -->
+<center>
+  <div id="app">
+    <!--
+    msg :<span v-text="message"></span>
+    -->
+    入力：
+    <input size="30" name="intext" v-model="message" />
+    <button @click="addItem">質問する</button>
+  </div>  
+</center>
+
+<br />
+</body>
+<script>
+//console.log("#then-aaa");
+  var botui = new BotUI('botui-app') // id of container
+  //
+  new Vue({
+    el: '#app',
+    data: {
+      message: '',
+    },
+    created:function(){
+       console.log("#create-1122");
+    },
+    methods: {
+      update() {
+        this.message = 'Vue.js';
+      },
+      addItem() {
+        console.log(this.message );
+        //
+        botui.message.add({
+          human: true,
+          content: this.message
+        });
+        //
+        var params = new URLSearchParams();
+        params.append('intext', this.message );
+        axios.post('./test3', params)
+        .then(response =>{
+            console.log(response.data );
+            //
+            botui.message.add({
+              content: response.data
+            });
+        });
+        this.message='';
+      },
+    }
+  });
+
+</script>
+<script src="{{ url_for('static', filename='app_chat.js') }}?B1"></script>
+<!--
+-->
+</html>
+
